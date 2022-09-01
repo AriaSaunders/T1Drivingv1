@@ -1,17 +1,13 @@
 package com.example.t1drivingv1;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,13 +18,37 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.t1drivingv1.databinding.ActivityMainBinding;
 
-import org.json.JSONArray;
+import android.os.AsyncTask;
+//import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+
 
 public class MainActivity extends AppCompatActivity {
     Button btn_getBG;
     ListView lv_currentBG;
 
     private ActivityMainBinding binding;
+
+    private String clientID = "tMzERvJ2R2F9qsrVZNcw1pc7Pqkz0GWl";
+    private String clientSecret = "V74ZjB7pCYU4PxI8";
+    private String redirectUri = "https://t1drivesafe.com";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,32 +70,57 @@ public class MainActivity extends AppCompatActivity {
         btn_getBG=findViewById(R.id.btn_getBG);
         lv_currentBG=findViewById(R.id.lv_currentBG);
 
-        // click listeners for button
-        btn_getBG.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
 
-                // Instantiate the RequestQueue
-                RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                String url = "https://sandbox-api.dexcom.com/v2/oauth2/login?client_id=tMzERvJ2R2F9qsrVZNcw1pc7Pqkz0GWl&redirect_uri=https://t1drivesafe.com&response_type=code&scope=offline_access";
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://sandbox-api.dexcom.com/v2/oauth2/login?client_id=" + clientID + "&redirect_uri=" + redirectUri + "&response_type=code&scope=offline_access"));
+                startActivity(intent);
 
-                JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        Toast.makeText(MainActivity.this, response.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(MainActivity.this, "Something wrong.", Toast.LENGTH_SHORT).show();
-                    }
-                });
 
-                // Add the request to the RequestQueue
-                queue.add(request);
-            }
-        });
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
 
+        Uri uri = getIntent().getData();
+
+        if (uri != null && uri.toString().startsWith(redirectUri)) {
+            String code = uri.getQueryParameter("code");
+            Toast.makeText(this, "yay", Toast.LENGTH_SHORT).show();
+        }
+
+        OkHttpClient client = new OkHttpClient();
+
+        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+        RequestBody body = RequestBody.create(mediaType, "client_secret=" + clientSecret + "&client_id=" + clientID + "&code=" + uri.getQueryParameter("code") + "&grant_type=authorization_code&redirect_uri=" + redirectUri;
+        Request request = new Request.Builder()
+                .url("https://api.dexcom.com/v2/oauth2/token")
+                .post(body)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    OkHttpClient client = new OkHttpClient();
+
+    Request request = new Request.Builder()
+            .url("https://api.dexcom.com/v2/users/self/egvs?startDate=2017-06-16T15:30:00&endDate=2017-06-16T15:45:00")
+            .get()
+            .addHeader("authorization", "Bearer {your_access_token}")
+            .build();
+
+    Response response;
+
+    {
+        try {
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
