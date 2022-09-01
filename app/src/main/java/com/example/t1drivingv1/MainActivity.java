@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         OkHttpClient client = new OkHttpClient();
 
         MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, "client_secret=" + clientSecret + "&client_id=" + clientID + "&code=" + uri.getQueryParameter("code") + "&grant_type=authorization_code&redirect_uri=" + redirectUri;
+        RequestBody body = RequestBody.create(mediaType, "client_secret=" + clientSecret + "&client_id=" + clientID + "&code=" + uri.getQueryParameter("code") + "&grant_type=authorization_code&redirect_uri=" + redirectUri);
         Request request = new Request.Builder()
                 .url("https://api.dexcom.com/v2/oauth2/token")
                 .post(body)
