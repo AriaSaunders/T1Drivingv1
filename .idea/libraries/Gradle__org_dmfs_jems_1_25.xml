@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: org.dmfs:jems:1.25">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.dmfs/jems/1.25/7ae191484e317be8bced3c0e15f2eb9b5109c230/jems-1.25.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.dmfs/jems/1.25/1b84199e9533ba0ff19f809a234cf38a75261fcc/jems-1.25-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.dmfs/jems/1.25/629c10154d8f9ad2f35bdf22f25225c432ce901a/jems-1.25-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

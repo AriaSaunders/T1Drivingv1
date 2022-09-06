@@ -102,9 +102,10 @@ public class MainActivity extends AppCompatActivity {
             Response response = client.newCall(request).execute();
         } catch (IOException e) {
             e.printStackTrace();
+            Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show();
         }
     }
-
+/*
     OkHttpClient client = new OkHttpClient();
 
     Request request = new Request.Builder()
@@ -123,4 +124,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+*/
 }

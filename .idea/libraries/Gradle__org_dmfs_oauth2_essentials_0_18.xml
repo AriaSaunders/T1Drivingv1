@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: org.dmfs:oauth2-essentials:0.18">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.dmfs/oauth2-essentials/0.18/3c49c3c38cb7a947c1250c3a811d3053f823e0ac/oauth2-essentials-0.18.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.dmfs/oauth2-essentials/0.18/5e5f382237ff03a81a99d24ae3a97b17e8e8b292/oauth2-essentials-0.18-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.dmfs/oauth2-essentials/0.18/87c3cbd7924967c7e057f928f87d154536abf4bf/oauth2-essentials-0.18-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
