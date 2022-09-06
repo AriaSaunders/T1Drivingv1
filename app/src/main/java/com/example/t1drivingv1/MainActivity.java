@@ -26,6 +26,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.dmfs.oauth2.client.OAuth2Scope;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,43 +68,53 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(binding.navView, navController);
 
         // assign values to each control on the layout
-        btn_getBG=findViewById(R.id.btn_getBG);
-        lv_currentBG=findViewById(R.id.lv_currentBG);
+        btn_getBG = findViewById(R.id.btn_getBG);
+        lv_currentBG = findViewById(R.id.lv_currentBG);
 
 
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://sandbox-api.dexcom.com/v2/oauth2/login?client_id=" + clientID + "&redirect_uri=" + redirectUri + "&response_type=code&scope=offline_access"));
-                startActivity(intent);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://sandbox-api.dexcom.com/v2/oauth2/login?client_id=" + clientID + "&redirect_uri=" + redirectUri + "&response_type=code&scope=offline_access"));
+        startActivity(intent);
 
 
     }
+
     @Override
     protected void onResume() {
         super.onResume();
 
+        // the intent filter defined in AndroidManifest will handle the return from ACTION_VIEW intent
         Uri uri = getIntent().getData();
 
         if (uri != null && uri.toString().startsWith(redirectUri)) {
+            // use the parameter your API exposes for the code (mostly it's "code")
             String code = uri.getQueryParameter("code");
-            Toast.makeText(this, "yay", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Yay", Toast.LENGTH_SHORT).show();
+
+            if (code != null) {
+                OkHttpClient client = new OkHttpClient();
+
+                MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
+                RequestBody body = RequestBody.create(mediaType, "client_secret=" + clientSecret + "&client_id=" + clientID + "&code=" + code + "&grant_type=authorization_code&redirect_uri=" + redirectUri);
+                Request request = new Request.Builder()
+                        .url("https://api.dexcom.com/v2/oauth2/token")
+                        .post(body)
+                        .addHeader("content-type", "application/x-www-form-urlencoded")
+                        .addHeader("cache-control", "no-cache")
+                        .build();
+
+                try {
+                    Response response = client.newCall(request).execute();
+                    Toast.makeText(this, "Yay", Toast.LENGTH_SHORT).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
 
-        OkHttpClient client = new OkHttpClient();
 
-        MediaType mediaType = MediaType.parse("application/x-www-form-urlencoded");
-        RequestBody body = RequestBody.create(mediaType, "client_secret=" + clientSecret + "&client_id=" + clientID + "&code=" + uri.getQueryParameter("code") + "&grant_type=authorization_code&redirect_uri=" + redirectUri);
-        Request request = new Request.Builder()
-                .url("https://api.dexcom.com/v2/oauth2/token")
-                .post(body)
-                .addHeader("content-type", "application/x-www-form-urlencoded")
-                .addHeader("cache-control", "no-cache")
-                .build();
+    /*
 
-        try {
-            Response response = client.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Something wrong", Toast.LENGTH_SHORT).show();
-        }
     }
 /*
     OkHttpClient client = new OkHttpClient();
@@ -125,4 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 */
-}
+
+        }
+    }
+
